@@ -3,7 +3,7 @@ package database
 import (
 	"github.com/jmoiron/sqlx"
 
-	"Golang1/conf"
+	"github.com/madebagus/ledgermate2/conf"
 
 	// PostgreSQL DB Driver
 	_ "github.com/lib/pq"

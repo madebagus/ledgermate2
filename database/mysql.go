@@ -1,8 +1,9 @@
 package database
 
 import (
-	"Golang1/conf"
 	"fmt"
+
+	"github.com/madebagus/ledgermate2/conf"
 
 	"github.com/jmoiron/sqlx"
 
