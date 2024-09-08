@@ -9,7 +9,7 @@ require (
 	github.com/mailgun/mailgun-go/v3 v3.6.4
 	github.com/mattn/go-colorable v0.1.13
 	github.com/prometheus/common v0.26.0
-	github.com/robfig/cron/v3 v3.0.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af
 	github.com/rs/zerolog v1.21.0
 	github.com/sirupsen/logrus v1.9.3
