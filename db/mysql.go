@@ -1,39 +1,34 @@
-package dbmysql
+package database
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
 
-	config "github.com/madebagus/ledgermate2/conf" // Adjust the import path as needed
+	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
 
-	_ "github.com/go-sql-driver/mysql" // Import the MySQL driver
+	config "github.com/madebagus/ledgermate2/conf"
+
+	// Mysql DB Driver
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func ConnectAndQueryMySQL() {
-	dbConfig := config.LoadDBConfig().MySQL
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
-		dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.DBName)
+// PSQLDBInit : init DB
+func MYSQLDBInit() *sqlx.DB {
+	dbConfig := config.LoadDBConfig().Postgres
+	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable",
+		dbConfig.User, dbConfig.Password, dbConfig.DBName, dbConfig.Host, dbConfig.Port)
 
-	db, err := sql.Open("mysql", connStr)
+	db, err := sqlx.Open("mysql", connStr)
 	if err != nil {
-		log.Fatal("Error connecting to the MySQL database:", err)
+		logrus.Fatal("MYSQL - DB open failed")
+		return nil
 	}
-	defer db.Close()
 
-	rows, err := db.Query("SELECT * FROM acl_list_new")
+	err = db.Ping()
 	if err != nil {
-		log.Fatal("Error executing query:", err)
+		logrus.Fatal("MYSQL - DB ping failed", err)
+		return nil
 	}
-	defer rows.Close()
 
-	for rows.Next() {
-		var id int
-		var name string
-		err = rows.Scan(&id, &name)
-		if err != nil {
-			log.Fatal("Error scanning row:", err)
-		}
-		fmt.Printf("ID: %d, Name: %s\n", id, name)
-	}
+	return db
 }
