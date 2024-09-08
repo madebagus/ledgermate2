@@ -1,0 +1,16 @@
+{
+    "postgres": {
+        "user": "postgres",
+        "password": "M8cBsi2SOmBVaJZn?",
+        "dbname": "api_con_extranet_dev",
+        "host": "8.215.24.101",
+        "port": 5432
+    },
+    "mysql": {
+        "user": "devadmin",
+        "password": "M7RBsi2SOmBVAJZn?",
+        "dbname": "testdb",
+        "host": "10.1.244.222",
+        "port": 3306
+    }
+}

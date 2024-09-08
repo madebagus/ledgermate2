@@ -1,35 +1,33 @@
-package conf
+package config
 
 import (
-	"fmt"
-
-	"github.com/spf13/viper"
-	_ "github.com/spf13/viper/remote"
+	"encoding/json"
+	"io/ioutil"
+	"log"
 )
 
-func GetConfig() (*viper.Viper, error) {
-	v := viper.New()
-	i := "local"
-	var err error
-	if i == "local" {
-		v.SetConfigName("config")
-		v.AddConfigPath(".")
-		v.SetConfigType("json")
-		err = v.ReadInConfig()
-	} else {
-		v.AddSecureRemoteProvider("etcd", "http://localhost", "/config.json", "./key/config.gpg")
-		v.SetConfigType("json") // because there is no file extension in a stream of bytes,  supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop"
-		err = v.ReadRemoteConfig()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-	return v, err
+type DBConfig struct {
+	User     string `json:"user"`
+	Password string `json:"password"`
+	DBName   string `json:"dbname"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
 }
 
-var (
-	DBPSQL1  = 0
-	DBMYSQL  = 1
-	DBCH     = 2
-	DBREDIST = 3
-)
+type Config struct {
+	Postgres DBConfig `json:"postgres"`
+	MySQL    DBConfig `json:"mysql"`
+}
+
+func LoadDBConfig() Config {
+	var config Config
+	file, err := ioutil.ReadFile("database.json")
+	if err != nil {
+		log.Fatal("Error reading database.json file:", err)
+	}
+	err = json.Unmarshal(file, &config)
+	if err != nil {
+		log.Fatal("Error unmarshalling database.json file:", err)
+	}
+	return config
+}

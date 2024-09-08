@@ -1,42 +1,40 @@
-package database
+package db
 
 import (
-	"github.com/jmoiron/sqlx"
+	"database/sql"
+	"fmt"
+	"log"
 
-	"github.com/madebagus/ledgermate2/conf"
+	config "github.com/madebagus/ledgermate2/conf"
 
-	// PostgreSQL DB Driver
-	_ "github.com/lib/pq"
-
-	"github.com/sirupsen/logrus"
+	// Adjust the import path as needed
+	_ "github.com/lib/pq" // Import the PostgreSQL driver
 )
 
-// PSQLDBInit : init DB
-func PSQLDBInit() *sqlx.DB {
-	v, err := conf.GetConfig()
-	dbname := v.GetString("datastore.psql.db")
-	host := v.GetString("datastore.psql.host")
-	user := v.GetString("datastore.psql.user")
-	password := v.GetString("datastore.psql.password")
-	port := v.GetString("datastore.psql.port")
-	schema := v.GetString("datastore.psql.schema")
-	maxcon := v.GetInt("datastore.psql.maxcon")
-	maxidle := v.GetInt("datastore.psql.maxidle")
+func ConnectAndQueryPostgres() {
+	dbConfig := config.LoadDBConfig().Postgres
+	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable",
+		dbConfig.User, dbConfig.Password, dbConfig.DBName, dbConfig.Host, dbConfig.Port)
 
-	db, err := sqlx.Open("postgres",
-		"host="+host+" port="+port+" user="+user+" password="+password+" dbname="+dbname+" sslmode=disable search_path="+schema)
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		logrus.Fatal("PQ - DB open failed")
-		return nil
+		log.Fatal("Error connecting to the PostgreSQL database:", err)
 	}
+	defer db.Close()
 
-	err = db.Ping()
+	rows, err := db.Query("SELECT * FROM your_table_name")
 	if err != nil {
-		logrus.Fatal("PQ - DB ping failed", err)
-		return nil
+		log.Fatal("Error executing query:", err)
 	}
+	defer rows.Close()
 
-	db.SetMaxOpenConns(maxcon)
-	db.SetMaxIdleConns(maxidle)
-	return db
+	for rows.Next() {
+		var id int
+		var name string
+		err = rows.Scan(&id, &name)
+		if err != nil {
+			log.Fatal("Error scanning row:", err)
+		}
+		fmt.Printf("ID: %d, Name: %s\n", id, name)
+	}
 }
