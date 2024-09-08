@@ -1,4 +1,4 @@
-module github.com/madebagus/ledgermate2
+module ledgermate
 
 go 1.23.0
 
