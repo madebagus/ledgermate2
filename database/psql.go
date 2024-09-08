@@ -1,11 +1,11 @@
-package db
+package dbpsql
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
 
-	config "conf"
+	config "github.com/madebagus/ledgermate2/conf"
 
 	// Adjust the import path as needed
 	_ "github.com/lib/pq" // Import the PostgreSQL driver

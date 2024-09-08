@@ -1,7 +1,7 @@
 package main
 
 import (
-	db "database" // Adjust the import path as needed
+	db "github.com/madebagus/ledgermate2/database"
 )
 
 func main() {

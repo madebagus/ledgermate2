@@ -1,11 +1,11 @@
-package db
+package dbmysql
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
 
-	config "conf" // Adjust the import path as needed
+	config "github.com/madebagus/ledgermate2/conf" // Adjust the import path as needed
 
 	_ "github.com/go-sql-driver/mysql" // Import the MySQL driver
 )
