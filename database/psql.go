@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	config "github.com/madebagus/ledgermate2/conf"
+	config "conf"
 
 	// Adjust the import path as needed
 	_ "github.com/lib/pq" // Import the PostgreSQL driver

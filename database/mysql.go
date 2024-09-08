@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	config "github.com/madebagus/ledgermate2/conf" // Adjust the import path as needed
+	config "conf" // Adjust the import path as needed
 
 	_ "github.com/go-sql-driver/mysql" // Import the MySQL driver
 )
