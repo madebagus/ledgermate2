@@ -3,11 +3,10 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"io"
 	"net/mail"
 	"os"
-	"path"
+	"text/template"
 	"time"
 
 	"runtime"
@@ -23,44 +22,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/diode"
 	"golang.org/x/crypto/ssh/terminal"
-	"gopkg.in/natefinch/lumberjack.v2"
 )
-
-// LogConfig : Configuration for logging
-type LogConfig struct {
-	// Enable console logging
-	ConsoleLoggingEnabled bool
-
-	// EncodeLogsAsJSON makes the log framework log JSON
-	EncodeLogsAsJSON bool
-	// FileLoggingEnabled makes the framework log to a file
-	// the fields below can be skipped if this value is false!
-	FileLoggingEnabled bool
-	// Directory to log to to when filelogging is enabled
-	Directory string
-	// Filename is the name of the logfile which will be placed inside the directory
-	Filename string
-	// MaxSize the max size in MB of the logfile before it's rolled
-	MaxSize int
-	// MaxBackups the max number of rolled files to keep
-	MaxBackups int
-	// MaxAge the max age in days to keep a logfile
-	MaxAge int
-}
-
-func newRollingFile(config LogConfig) io.Writer {
-	if err := os.MkdirAll(config.Directory, 0744); err != nil {
-		Logger.Error().Err(err).Str("path", config.Directory).Msg("can't create log directory")
-		return nil
-	}
-
-	return &lumberjack.Logger{
-		Filename:   path.Join(config.Directory, config.Filename),
-		MaxBackups: config.MaxBackups, // files
-		MaxSize:    config.MaxSize,    // megabytes
-		MaxAge:     config.MaxAge,     // days
-	}
-}
 
 var (
 	//DBSQL
