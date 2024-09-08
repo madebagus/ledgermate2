@@ -1,45 +1,39 @@
-package database
+package db
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 
-	"github.com/madebagus/ledgermate2/conf"
+	config "github.com/madebagus/ledgermate2/conf" // Adjust the import path as needed
 
-	"github.com/jmoiron/sqlx"
-
-	// Mysql DB Driver
-	_ "github.com/go-sql-driver/mysql"
-
-	"github.com/sirupsen/logrus"
+	_ "github.com/go-sql-driver/mysql" // Import the MySQL driver
 )
 
-// MYSQLInit : init DB
-func MYSQLInit() *sqlx.DB {
-	v, err := conf.GetConfig()
-	dbname := v.GetString("datastore.mysql.db")
-	host := v.GetString("datastore.mysql.host")
-	user := v.GetString("datastore.mysql.user")
-	password := v.GetString("datastore.mysql.password")
-	port := v.GetString("datastore.mysql.port")
-	maxcon := v.GetInt("datastore.mysql.maxcon")
-	maxidle := v.GetInt("datastore.mysql.maxidle")
+func ConnectAndQueryMySQL() {
+	dbConfig := config.LoadDBConfig().MySQL
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+		dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.DBName)
 
-	db, err := sqlx.Open("mysql", user+":"+password+"@tcp("+host+":"+port+")/"+dbname)
+	db, err := sql.Open("mysql", connStr)
 	if err != nil {
-		logrus.Fatal("MYSQL DB open failed")
-		fmt.Println(err)
-		return nil
+		log.Fatal("Error connecting to the MySQL database:", err)
 	}
+	defer db.Close()
 
-	err = db.Ping()
+	rows, err := db.Query("SELECT * FROM acl_list_new")
 	if err != nil {
-		logrus.Fatal("MYSQL DB ping failed 2 times")
-		fmt.Println(err)
-		return nil
+		log.Fatal("Error executing query:", err)
 	}
+	defer rows.Close()
 
-	db.SetMaxOpenConns(maxcon)
-	db.SetMaxIdleConns(maxidle)
-
-	return db
+	for rows.Next() {
+		var id int
+		var name string
+		err = rows.Scan(&id, &name)
+		if err != nil {
+			log.Fatal("Error scanning row:", err)
+		}
+		fmt.Printf("ID: %d, Name: %s\n", id, name)
+	}
 }

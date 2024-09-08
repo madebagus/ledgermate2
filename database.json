@@ -7,10 +7,10 @@
         "port": 5432
     },
     "mysql": {
-        "user": "devadmin",
+        "user": "devadmin3",
         "password": "M7RBsi2SOmBVAJZn?",
-        "dbname": "testdb",
-        "host": "10.1.244.222",
+        "dbname": "rna_extranet",
+        "host": "8.215.24.101",
         "port": 3306
     }
 }

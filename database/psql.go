@@ -22,7 +22,7 @@ func ConnectAndQueryPostgres() {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT * FROM your_table_name")
+	rows, err := db.Query("SELECT * FROM hotel_list_new")
 	if err != nil {
 		log.Fatal("Error executing query:", err)
 	}
